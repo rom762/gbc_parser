@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import json
 import os
 from pprint import pprint
@@ -37,3 +39,10 @@ print('='*100)
 parsed_birthdays = parse_user_data(response.text)
 
 pprint(parsed_birthdays)
+
+dt = datetime.strftime(datetime.now(), '%Y%m%d_%H%M_%S')
+filename = f"{dt}.json"
+full_path = os.path.join(os.getcwd(), 'json', filename)
+
+with open(full_path, 'w', encoding='utf-8') as ff:
+    json.dump(parsed_birthdays, ff, ensure_ascii=False)

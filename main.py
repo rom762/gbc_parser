@@ -120,7 +120,7 @@ if __name__ == '__main__':
                        'result'][0]['user-agent']}
 
     # генерируем адреса постов по шаблону
-    blog_urls = generate_urls(year=2022)
+    blog_urls = generate_urls(year=2023)
     print(*blog_urls, sep='\n')
 
     # получаем только адреса постов с днями рождениями
@@ -139,7 +139,7 @@ if __name__ == '__main__':
     print(f"just birthday blog pages: {len(birthdays_pages)}")
     # birthdays_pages = [{'url': '/pages/viewpage.action?pageId=197230835',
     #                     'title': 'just for test'}]
-
+    result = list()
     for page in birthdays_pages:
         payload['os_destination'] = page['url']
         current_page_url = f'https://wiki.glowbyteconsulting.com{page["url"]}'
@@ -155,9 +155,12 @@ if __name__ == '__main__':
             current_page_data = parse_user_data(r.text)
             if current_page_data:
                 print(f"Current page data length: {len(current_page_data)}")
-                with open(json_filename, 'a', encoding='utf-8') as ff:
-                    json.dump(current_page_data, ff, indent=4)
+                result.append(current_page_data)
             else:
                 print(f"Page {page['title']} - {page['url']} is broken")
                 save_raw_content(r.text, page['title'])
-        time.sleep(1)
+        time.sleep(0.5)
+
+    result = str(result).replace('][', ',')
+    with open(json_filename, 'a', encoding='utf-8') as ff:
+        json.dump(result, ff, indent=4, ensure_ascii=False)
